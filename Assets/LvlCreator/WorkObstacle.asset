@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 753250060c6019b46bab7126385d0a9d, type: 3}
+  m_Name: WorkObstacle
+  m_EditorClassIdentifier: 
+  _workObstacles:
+  - _obstaclePrefab: {fileID: 7993016887227568959, guid: b5eeccd042ab06a419fb74706278dd1b, type: 3}
+    _hotbarImage: {fileID: 21300000, guid: 736fa31c17c0f73488c2726424b9fdd5, type: 3}
