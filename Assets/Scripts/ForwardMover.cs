@@ -21,30 +21,13 @@ public class ForwardMover : MonoBehaviour
     {
         ServiceLocator = ServiceLocator.Instance;
         Rigidbody = GetComponent<Rigidbody>();
-        Subscribe();
     }
 
-    protected virtual void OnFixedUpdate()
+    protected void FixedUpdate()
     {
         //if (!ServiceLocator.Instance.LvlController.LvlStarted)
         //    return;
         if(Rigidbody.velocity.y < MinYSpeed)
             Rigidbody.AddForce(new Vector3(-Rigidbody.velocity.x, Accseleration, 0), ForceMode.Acceleration);
     }
-
-    private void OnDestroy()
-    {
-        Unsubscribe();
-    }
-
-    protected virtual void Subscribe()
-    {
-        ServiceLocator.FixedUpdateCalled += OnFixedUpdate;
-    }
-
-    protected virtual void Unsubscribe()
-    {
-        ServiceLocator.FixedUpdateCalled -= OnFixedUpdate;
-    }
-
 }

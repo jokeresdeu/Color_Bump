@@ -24,7 +24,7 @@ public class LvlControllerTest : MonoBehaviour
     //public Action PlayerMaterialChanged = delegate { };
     public void Start()
     {
-        _player.Init();
+        //_player.Init();
         LvlLength = _serviceLocator.LvlObjects.EndPoint.position.y - _serviceLocator.LvlObjects.StartPoint.position.y;
        
        

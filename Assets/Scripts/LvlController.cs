@@ -31,7 +31,7 @@ public class LvlController
     {
         _serviceLocator = serviceLocator;
         _player = player;
-        _player.Init();
+        //_player.Init();
 
         LvlLength = _serviceLocator.LvlObjects.EndPoint.position.y - _serviceLocator.LvlObjects.StartPoint.position.y;
         LvlWidth = _serviceLocator.LvlObjects.EndPoint.position.x - _serviceLocator.LvlObjects.StartPoint.position.x;

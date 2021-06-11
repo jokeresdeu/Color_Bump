@@ -3,50 +3,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : ForwardMover
+public class Player : MonoBehaviour
 {
     [SerializeField] private float _speedModifier;
     [SerializeField] private float _smoothVal;
-
+    [SerializeField] private Rigidbody _parrent;
     private Vector2 _prevMousePosition;
     private Vector2 _delta;
     private bool _controled;
 
-
+    private Rigidbody _rigidbody;
     public MeshRenderer MeshRenderer { get; private set; }
     
     public event Action PlayerMoved = delegate { };
     public event Action<bool> PlayerEndedLvl = delegate { };
 
-    public override void Init()
+    public void Start()
     {
-        base.Init();
         MeshRenderer = GetComponent<MeshRenderer>();
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
-    protected override void Subscribe()
+    protected void Update()
     {
-        base.Subscribe();
-        ServiceLocator.UpdateCalled += OnUpdate;
-    }
-
-    protected override void Unsubscribe()
-    {
-        base.Unsubscribe();
-        ServiceLocator.UpdateCalled -= OnUpdate;
-    }
-    private bool go;
-
-    protected void OnUpdate()
-    {
-#if UNITY_ANDROID
+#if UNITY_EDITOR
         if (Input.GetButtonDown("Fire1"))
         {
-            if(!go)
-            {
+           if(!ServiceLocator.Instance.LvlController.IsLvlStarted)
+           {
                 PlayerMoved();
-                go = true;
-            }
+           }
 
             _controled = true;
             _prevMousePosition = Input.mousePosition;
@@ -86,20 +72,35 @@ public class Player : ForwardMover
 #endif
     }
 
-    protected override void OnFixedUpdate()
+    protected void FixedUpdate()
     {
         if (_delta != Vector2.zero)
         {
+            if (_delta.y < 0)
+            {
+                if (transform.position.y < Camera.main.transform.position.y + 2)
+                    _delta.y = 0;
+                else
+                    _delta *= 2;
+            }
+
             Vector3 refVel = Vector3.zero;
-            Rigidbody.velocity = Vector3.SmoothDamp(Rigidbody.velocity, Rigidbody.velocity + new Vector3(_delta.x, _delta.y, 0) * _speedModifier, ref refVel, _smoothVal);
+            _rigidbody.velocity = Vector3.SmoothDamp(_rigidbody.velocity, _rigidbody.velocity + new Vector3(_delta.x, _delta.y, 0) * _speedModifier, ref refVel, _smoothVal);
             _delta = Vector2.zero;
         }
 
-        if (_controled)
-            return;
+        if (!_controled)
+        {
+            Vector3 balancingVelocity = new Vector3();
 
-        base.OnFixedUpdate();
+            if(_rigidbody.velocity.y < _parrent.velocity.y)
+                balancingVelocity.y = (_parrent.velocity.y - _rigidbody.velocity.y )* 0.8f;
 
+            if (_rigidbody.velocity.x != 0)
+                balancingVelocity.x = -_rigidbody.velocity.x / 10;
+
+            _rigidbody.velocity += balancingVelocity;
+        }
     }
 
     public void OnDeath()
