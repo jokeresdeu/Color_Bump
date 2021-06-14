@@ -9,7 +9,7 @@ public class LvlController
     private Transform _cameraTransform;
     private Player _player;
     private ServiceLocator _serviceLocator;
-    private LvlGenerator _lvlGenerator;
+    public LvlGenerator LvlGenerator { get; private set; }
     private LvlData _currentLvlvData;
 
     private List<ObstacleContainer> _friendlyObstacles;
@@ -19,7 +19,7 @@ public class LvlController
 
     private bool _obstaclesRemoved = false;
     private bool _obstaclesPlaced = false;
-
+    public int CurrentLvl { get; private set; }
     public bool IsLvlStarted { get; private set; }
     public float LvlLength { get; private set; }
     public float LvlWidth { get; private set; }
@@ -31,24 +31,25 @@ public class LvlController
     {
         _serviceLocator = serviceLocator;
         _player = player;
-        //_player.Init();
 
         LvlLength = _serviceLocator.LvlObjects.EndPoint.position.y - _serviceLocator.LvlObjects.StartPoint.position.y;
         LvlWidth = _serviceLocator.LvlObjects.EndPoint.position.x - _serviceLocator.LvlObjects.StartPoint.position.x;
 
-        _lvlGenerator = new LvlGenerator(this);
+        LvlGenerator = new LvlGenerator(this);
 
         _friendlyObstacles = new List<ObstacleContainer>();
         _enemyObstacles = new List<ObstacleContainer>();
         _cameraTransform = Camera.main.transform;
+    }
 
-       
-        //StartCourutine
+    public void LoadNextLvl()
+    {
+
     }
 
     public void LoadLvl(int lvl)
     {
-        _currentLvlvData = _lvlGenerator.GetLvlData(lvl);
+        _currentLvlvData = LvlGenerator.GetLvlData(lvl);
         PrepareLvl();
     }
 
@@ -60,7 +61,8 @@ public class LvlController
 
     public void PrepareLvl()
     {
-        _player.MeshRenderer.material = _lvlGenerator.DefaultMaterial;
+        Time.timeScale = 1f;
+        _player.MeshRenderer.material = LvlGenerator.DefaultMaterial;
         _player.PlayerMoved += OnPlayerMoved;
         float endPos = _serviceLocator.LvlObjects.StartPoint.position.y + _serviceLocator.LvlObjects.RenderDistance; 
         _friendlyObstaclesPerLvl = _currentLvlvData.FriendlyObstacles;
@@ -84,8 +86,8 @@ public class LvlController
 
     private void PlaceObstaclesTo(float endPos)
     {
-        PlaceObstaclesTo(endPos, _friendlyObstacles, _friendlyObstaclesPerLvl, _lvlGenerator.DefaultMaterial);
-        PlaceObstaclesTo(endPos, _enemyObstacles, _enemyObstaclesPerLvl, _lvlGenerator.AlternativeMaterial);
+        PlaceObstaclesTo(endPos, _friendlyObstacles, _friendlyObstaclesPerLvl, LvlGenerator.DefaultMaterial);
+        PlaceObstaclesTo(endPos, _enemyObstacles, _enemyObstaclesPerLvl, LvlGenerator.AlternativeMaterial);
         _obstaclesPlaced = true;
     }
 
@@ -132,6 +134,7 @@ public class LvlController
     private void OnPlayerEndedLvl(bool successfully)
     {
          LvlEnded(successfully);
+         Time.timeScale = 0.5f;
          IsLvlStarted = false;
         _player.PlayerEndedLvl -= OnPlayerEndedLvl;
     }

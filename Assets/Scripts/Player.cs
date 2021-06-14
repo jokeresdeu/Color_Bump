@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
     public event Action PlayerMoved = delegate { };
     public event Action<bool> PlayerEndedLvl = delegate { };
 
-    public void Start()
+    public void Init()
     {
         MeshRenderer = GetComponent<MeshRenderer>();
         _rigidbody = GetComponent<Rigidbody>();
@@ -70,6 +70,7 @@ public class Player : MonoBehaviour
             _delta = touch.deltaPosition;
         }
 #endif
+
     }
 
     protected void FixedUpdate()
@@ -93,8 +94,8 @@ public class Player : MonoBehaviour
         {
             Vector3 balancingVelocity = new Vector3();
 
-            if(_rigidbody.velocity.y < _parrent.velocity.y)
-                balancingVelocity.y = (_parrent.velocity.y - _rigidbody.velocity.y )* 0.8f;
+            if (_rigidbody.velocity.y < _parrent.velocity.y)
+                balancingVelocity.y = (_parrent.velocity.y - _rigidbody.velocity.y) * 0.8f;
 
             if (_rigidbody.velocity.x != 0)
                 balancingVelocity.x = -_rigidbody.velocity.x / 10;
@@ -105,11 +106,13 @@ public class Player : MonoBehaviour
 
     public void OnDeath()
     {
-        //PlayerDied();
+        Debug.LogError("Dead");
+        //PlayerEndedLvl(false);
+        //crate animation
     }
 
     public void OnFinishLineCrossing()
     {
-
+        PlayerEndedLvl(true);
     }
 }

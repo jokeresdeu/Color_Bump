@@ -8,11 +8,13 @@ public class ServiceLocator : MonoBehaviour
     [SerializeField] private Player _player;
     [SerializeField] private LvlObjects _lvlObjects;
     [SerializeField] private ObstaclesPool _obstaclePool;
-
+    [SerializeField] private SoundMap _soundMap;
     //public LvlController LvlController { get; private set; }
     public ObstaclesPool ObstaclesPool => _obstaclePool;
     public LvlObjects LvlObjects => _lvlObjects;
     public LvlController LvlController { get; private set; }
+
+    public SoundMap SoundMap => _soundMap;
     public bool GamePaused { get; private set; }
 
     #region Singleton
@@ -32,9 +34,9 @@ public class ServiceLocator : MonoBehaviour
 
     void Start()
     {
+        _player.Init();
         LvlController = new LvlController(_player, this);
-
-        //LvlController.LoadLvl(1);
+        LvlController.LoadLvl(1);
         LvlController.LvlStarted += OnLvlstarted;
         LvlController.LvlEnded += OnLvlEnded;
         GamePaused = false;
@@ -53,7 +55,12 @@ public class ServiceLocator : MonoBehaviour
         LvlController.LvlEnded -= OnLvlEnded;
         LvlController.LvlStarted += OnLvlstarted;
     }
-    
+
+    private void OnDrawGizmos()
+    {
+        LvlController.LvlGenerator.ObstacleGrid.DrawGrid();
+    }
+
     // Update is called once per frame
     void Update()
     {

@@ -25,9 +25,9 @@ public class ForwardMover : MonoBehaviour
 
     protected void FixedUpdate()
     {
-        //if (!ServiceLocator.Instance.LvlController.LvlStarted)
-        //    return;
-        if(Rigidbody.velocity.y < MinYSpeed)
+        if (!ServiceLocator.Instance.LvlController.IsLvlStarted)
+            return;
+        if (Rigidbody.velocity.y < MinYSpeed)
             Rigidbody.AddForce(new Vector3(-Rigidbody.velocity.x, Accseleration, 0), ForceMode.Acceleration);
     }
 }

@@ -79,7 +79,7 @@ public class ObstacleGrid
         size = new Vector3(RoundValue(size.x), RoundValue(size.y), RoundValue(size.z));
 
         Vector2Int gridSize = CountGridSize(size);
-        float maxSizePerCell = Constants.GridCellSize - Constants.GridCellSize / 10;
+        float maxSizePerCell = Constants.GridCellSize - Constants.GridCellSize / 20;
         Vector3 maxSize = new Vector3(gridSize.x * maxSizePerCell, gridSize.y * maxSizePerCell, 0);
 
         if (size.x > maxSize.x)
